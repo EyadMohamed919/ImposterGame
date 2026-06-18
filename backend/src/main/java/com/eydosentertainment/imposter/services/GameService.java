@@ -1,7 +1,6 @@
 package com.eydosentertainment.imposter.services;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -17,9 +16,9 @@ public class GameService {
         this.gameRepository = gameRepository;
     }
 
-    public Optional<Game> getGameByID(Long id) {
+    public Game getGameByID(Long id) {
 
-        return gameRepository.findById(id);
+        return gameRepository.findById(id).orElse(null);
     }
 
     public List<Game> getAllGames() {
@@ -27,8 +26,8 @@ public class GameService {
         return gameRepository.findAll();
     }
 
-    public void createGame(Game game) {
-        gameRepository.save(game);
+    public Game createGame(Game game) {
+        return gameRepository.save(game);
     }
 
 }
