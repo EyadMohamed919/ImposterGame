@@ -12,5 +12,6 @@
         "statusBar.noFolderBackground": "#2E2267",
         "statusBar.noFolderForeground": "#FBFBFE"
     },
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "liveServer.settings.port": 8081
 }

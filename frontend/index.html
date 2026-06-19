@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Imposter WS Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+</head>
+<body>
+    <h2>Imposter WebSocket Testing Pad</h2>
+    <button onclick="connect()">1. Connect</button>
+    <button onclick="subscribeTopic()">2. Subscribe to /topic/player</button>
+    <button onclick="sendFetchMessage()">3. Send Fetch Request</button>
+    
+    <h3>Logs:</h3>
+    <pre id="log" style="background: #eee; padding: 10px; min-height: 200px;"></pre>
+
+    <script>
+        let stompClient = null;
+
+        function log(message) {
+            document.getElementById('log').innerHTML += message + "\n";
+        }
+
+        function connect() {
+            // Connects directly to your Java endpoint
+            const socket = new WebSocket('ws://localhost:8080/imposter-websocket');
+            stompClient = Stomp.over(socket);
+            
+            stompClient.connect({}, function (frame) {
+                log('CONNECTED TO SERVER: ' + frame);
+            }, function(error) {
+                log('ERROR: ' + error);
+            });
+        }
+
+        function subscribeTopic() {
+            if(!stompClient) return alert("Connect first!");
+            stompClient.subscribe('/topic/player', function (response) {
+                log('--- INCOMING DATA RECEIVED ---');
+                
+                log(JSON.stringify(JSON.parse(response.body), null, 2));
+                log(JSON.parse(response.body).name)
+            });
+            log('Subscribed to /topic/player');
+        }
+
+        function sendFetchMessage() {
+            if(!stompClient) return alert("Connect first!");
+            // Triggers your @MessageMapping() method
+            stompClient.send("/app/player", {}, "{}");
+            log('Sent request to /app/player');
+        }
+    </script>
+</body>
+</html>

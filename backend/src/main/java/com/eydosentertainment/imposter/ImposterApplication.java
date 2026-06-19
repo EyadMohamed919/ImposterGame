@@ -1,16 +1,8 @@
 package com.eydosentertainment.imposter;
 
-import java.util.ArrayList;
-
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 
-import com.eydosentertainment.imposter.models.Game;
-import com.eydosentertainment.imposter.models.Player;
-import com.eydosentertainment.imposter.services.GameService;
-import com.eydosentertainment.imposter.services.PlayerService;
 
 @SpringBootApplication
 public class ImposterApplication {
