@@ -8,16 +8,37 @@
     <h2>Imposter WebSocket Testing Pad</h2>
     <button onclick="connect()">1. Connect</button>
     <button onclick="subscribeTopic()">2. Subscribe to /topic/player</button>
-    <button onclick="sendFetchMessage()">3. Send Fetch Request</button>
+    <button onclick="subscribeGameTopic()">3. Subscribe to /topic/game/4</button>
+    <button onclick="sendFetchMessage()">4. Send Fetch Request</button>
+
+    <form action="">
+        <table>
+            <thead>
+                <td>Name</td>
+                <td>Submit</td>
+            </thead>
+            <tbody>
+                <td><input type="text" id="nameInput" placeholder="enter name"></td>
+                <td><button onclick="createPlayer()" type="button">Join Game</button></td>
+            </tbody>
+        </table>
+    </form>
     
+    <h2 id="currentPlayer">Current Player: None</h2>
     <h3>Logs:</h3>
     <pre id="log" style="background: #eee; padding: 10px; min-height: 200px;"></pre>
 
     <script>
         let stompClient = null;
-
+        let playerData = null
         function log(message) {
             document.getElementById('log').innerHTML += message + "\n";
+        }
+
+        function updateInterface(data)
+        {
+            headerTag = document.getElementById("currentPlayer");
+            headerTag.innerHTML = "Name: " + data.name + " - isImposter: " + data.isImposter + " - game: " + data.game + " - votedPlayer: " + data.votedPlayer;
         }
 
         function connect() {
@@ -32,6 +53,40 @@
             });
         }
 
+        async function createPlayer()
+        {
+            const name = document.getElementById("nameInput").value;
+            payload = {
+                "name":name,
+                "isImposter":false,
+                "game":null,
+                "votedPlayer":null
+            }
+            let response = await fetch("http://127.0.0.1:8080/player", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(payload)
+            });
+
+            let data = await response.json();
+
+
+            newResponse = await fetch("http://127.0.0.1:8080/player/" + data.id + "/game/4", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify(payload)
+            });
+
+            newData = await newResponse.json();
+
+            playerData = newData;
+            updateInterface(newData);
+        }
+
         function subscribeTopic() {
             if(!stompClient) return alert("Connect first!");
             stompClient.subscribe('/topic/player', function (response) {
@@ -43,11 +98,29 @@
             log('Subscribed to /topic/player');
         }
 
+        function subscribeGameTopic() {
+            if(!stompClient) return alert("Connect first!");
+            stompClient.subscribe('/topic/game/4', function (response) {
+                log('--- INCOMING DATA RECEIVED ---');
+                
+                // log(JSON.stringify(JSON.parse(response.body), null, 2));
+                log(response)
+            });
+            log('Subscribed to /topic/game/4');
+        }
+
         function sendFetchMessage() {
             if(!stompClient) return alert("Connect first!");
             // Triggers your @MessageMapping() method
             stompClient.send("/app/player", {}, "{}");
             log('Sent request to /app/player');
+        }
+
+        function sendFetchGameMessage() {
+            if(!stompClient) return alert("Connect first!");
+            // Triggers your @MessageMapping() method
+            stompClient.send("/app/game", {}, "{}");
+            log('Sent request to /app/game');
         }
     </script>
 </body>

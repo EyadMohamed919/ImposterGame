@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import com.eydosentertainment.imposter.services.PlayerService;
 
 @RestController
 @RequestMapping("/player")
+@CrossOrigin(origins = "http://127.0.0.1:8081")
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -89,6 +91,24 @@ public class PlayerController {
         return ResponseEntity.ok(savedPlayer);
     }
 
+    // @PostMapping("/{id}/game/")
+    // public ResponseEntity<?> assignRandomGameToPlayer(@PathVariable Long id) {
+    //     Player player = this.playerService.getPlayerByID(id);
+    //     Game game = this.gameService.getGameByID(gameID);
+
+    //     if (player == null) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Player not found"));
+    //     }
+
+    //     if (game == null) {
+    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Game not found"));
+    //     }
+
+    //     player.setGame(game);
+    //     Player savedPlayer = this.playerService.createPlayer(player);
+    //     return ResponseEntity.ok(savedPlayer);
+    // }
+
     @PostMapping("/{id}/votedPlayer/{votedPlayerID}")
     public ResponseEntity<?> voteOnPlayer(@PathVariable Long id, @PathVariable Long votedPlayerID) {
         Player player = this.playerService.getPlayerByID(id);
@@ -110,7 +130,12 @@ public class PlayerController {
         player.setVotedPlayer(votedPlayer);
         Player savedPlayer = this.playerService.createPlayer(player);
 
-        this.messagingTemplate.convertAndSend("/topic/player", savedPlayer);
+        String stats = savedPlayer.getName() + " voted on " + votedPlayer.getName();
+
+        this.messagingTemplate.convertAndSend(
+            "/topic/game/" + savedPlayer.getGame().getId(), 
+            stats
+        );
         return ResponseEntity.ok(savedPlayer);
     }
 }
