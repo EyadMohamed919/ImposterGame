@@ -8,7 +8,7 @@ interface game{
 interface player {
     id: number | null,
     name: string | null,
-    isImposter:boolean,
+    imposter:boolean,
     game:game | null,
     votedPlayer: player | null
 }
@@ -16,7 +16,7 @@ interface player {
 const initialState: player = {
     id:null,
     name:null,
-    isImposter:false,
+    imposter:false,
     game:null,
     votedPlayer: null
 };
@@ -28,16 +28,16 @@ export const PlayerSlice = createSlice({
         attachPlayer: (state, action: PayloadAction<player>) => {
             state.id = action.payload.id;
             state.name = action.payload.name;
-            state.isImposter = action.payload.isImposter;
+            state.imposter = action.payload.imposter;
             state.game = action.payload.game;
             state.votedPlayer = action.payload.votedPlayer;
         },
         detachPlayer: (state) => {
             state.id = null;
             state.name = null;
-            state.isImposter = false;
+            state.imposter = false;
             state.game = null;
-            state.votedPlayer = null;
+            state.votedPlayer = null;            
         }
     }
 });

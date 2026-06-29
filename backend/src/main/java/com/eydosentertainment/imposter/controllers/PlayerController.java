@@ -7,12 +7,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eydosentertainment.imposter.models.Game;
@@ -55,25 +55,33 @@ public class PlayerController {
     }
 
     @PostMapping("/{id}/isImposter/{isImposter}")
-    public ResponseEntity<?> setPlayerImposter(@PathVariable Long id, @PathVariable boolean isImposter) {
+    public ResponseEntity<?> setPlayerImposter(@PathVariable Long id, @PathVariable boolean imposter) {
         Player player = this.playerService.getPlayerByID(id);
 
         if (player == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Player not found"));
         }
 
-        player.setImposter(isImposter);
+        player.setImposter(imposter);
         this.playerService.createPlayer(player);
 
         return ResponseEntity.ok(player);
     }
 
     @PostMapping
-    public ResponseEntity<Player> createPlayer(@RequestBody  String name) {
+    public ResponseEntity<Player> createPlayer(@RequestBody Map<String, String> payload) {
         Player player = new Player();
-        player.setName(name);
+        player.setName(payload.get("name"));
         Player createdPlayer = this.playerService.createPlayer(player);
         return ResponseEntity.status(201).body(createdPlayer);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Boolean> deletePlayer(@RequestBody Player player)
+    {
+        Player removedPlayer = this.playerService.getPlayerByID(player.getId());
+        this.playerService.deletPlayer(removedPlayer);
+        return ResponseEntity.status(200).body(true);
     }
 
     @PostMapping("/{id}/game/{gameID}")

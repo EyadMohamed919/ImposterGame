@@ -24,6 +24,10 @@ public class PlayerService {
         return playerRepository.save(player);
     }
 
+    public void deletPlayer(Player player) {
+        playerRepository.delete(player);
+    }
+
     public List<Player> getAllPlayers() {
         return playerRepository.findAll();
     }

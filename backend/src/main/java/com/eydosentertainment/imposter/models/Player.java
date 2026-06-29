@@ -10,7 +10,7 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private boolean isImposter = false;
+    private Boolean imposter = false;
 
     @ManyToOne
     @JoinColumn(name = "game_id")
@@ -20,9 +20,9 @@ public class Player {
     @JoinColumn(name = "voted_player_id") // 2. This creates a foreign key column in your database
     private Player votedPlayer;
 
-    public Player(String name, boolean isImposter, Game game, Player votedPlayer) {
+    public Player(String name, boolean imposter, Game game, Player votedPlayer) {
         this.name = name;
-        this.isImposter = isImposter;
+        this.imposter = imposter;
         this.game = game;
         this.votedPlayer = votedPlayer;
     }
@@ -56,11 +56,11 @@ public class Player {
     }
 
     public boolean isImposter() {
-        return isImposter;
+        return imposter;
     }
 
-    public void setImposter(boolean isImposter) {
-        this.isImposter = isImposter;
+    public void setImposter(boolean imposter) {
+        this.imposter = imposter;
     }
 
     public Game getGame() {
