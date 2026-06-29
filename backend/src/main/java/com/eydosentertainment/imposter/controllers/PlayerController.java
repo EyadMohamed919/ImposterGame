@@ -21,7 +21,7 @@ import com.eydosentertainment.imposter.services.PlayerService;
 
 @RestController
 @RequestMapping("/player")
-@CrossOrigin(origins = "http://127.0.0.1:8081")
+@CrossOrigin(origins = "http://localhost:5173")
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -68,7 +68,9 @@ public class PlayerController {
     }
 
     @PostMapping
-    public ResponseEntity<Player> createPlayer(@RequestBody Player player) {
+    public ResponseEntity<Player> createPlayer(@RequestBody String name) {
+        Player player = new Player();
+        player.setName(name);
         Player createdPlayer = this.playerService.createPlayer(player);
         return ResponseEntity.status(201).body(createdPlayer);
     }
