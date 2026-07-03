@@ -37,9 +37,12 @@ function CreatePlayer() {
             <h1 className="text-2xl font-bold text-white">Welcome to Imposter</h1>
             
 
-            <input onChange={(e)=>setName(e.target.value)} type="text" className="m-auto mt-3 p-3 text-white bg-blue-500/30  rounded-xl" placeholder="Enter your name" />
             
-            {player.id == null ? (<button onClick={()=>sendPlayer()} className="hover:cursor-pointer hover:bg-white transition-all duration-300 m-auto mt-3 px-5 p-3 bg-blue-500/70 rounded-full">Create</button>) : (<button onClick={()=>removedPlayer()} className="hover:cursor-pointer hover:bg-white transition-all duration-300 m-auto mt-3 px-5 p-3 bg-red-500/70 rounded-full">Delete Player</button>)}
+            
+            {player.id == null ? (<>
+            <input onChange={(e)=>setName(e.target.value)} type="text" className="m-auto mt-3 p-3 text-white bg-blue-500/30  rounded-xl" placeholder="Enter your name" />
+            <button onClick={()=>sendPlayer()} className="hover:cursor-pointer hover:bg-white transition-all duration-300 m-auto mt-3 px-5 p-3 bg-blue-500/70 rounded-full">Create</button>
+            </>) : (<button onClick={()=>removedPlayer()} className="hover:cursor-pointer hover:bg-white transition-all duration-300 m-auto mt-3 px-5 p-3 bg-red-500/70 rounded-full">Delete Player</button>)}
         </div>
      );
 }

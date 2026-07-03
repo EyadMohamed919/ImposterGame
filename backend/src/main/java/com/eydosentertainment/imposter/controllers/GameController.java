@@ -3,6 +3,7 @@ package com.eydosentertainment.imposter.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,9 +17,10 @@ import com.eydosentertainment.imposter.services.GameService;
 public class GameController {
 
     private final GameService gameService;
-
-    public GameController(GameService gameService) {
+    private final SimpMessagingTemplate messagingTemplate;
+    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
         this.gameService = gameService;
+        this.messagingTemplate = messagingTemplate;
     }
 
     @GetMapping("/game")
@@ -40,6 +42,11 @@ public class GameController {
     @PostMapping("/game")
     public ResponseEntity<Game> createGame(@RequestBody Game game) {
         Game createdGame = this.gameService.createGame(game);
+        List<Game> games = this.gameService.getAllGames();
+        this.messagingTemplate.convertAndSend(
+            "/topic/game", 
+            games
+        );
         return ResponseEntity.status(201).body(createdGame);
     }
 }
