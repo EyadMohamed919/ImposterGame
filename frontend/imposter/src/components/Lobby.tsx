@@ -1,14 +1,32 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../app/store";
 import CreatePlayer from "./CreatePlayer";
 import { useGameWebSocket } from "../app/WebSocket";
+import axios from "axios";
+import { attachGamesList } from "../features/game/GamesSlice";
+import { useState } from "react";
 
 function Lobby() {
 
   const player = useSelector((state:RootState)=>state.player);
+  const dispatch = useDispatch();
+  const [requested, setRequested] = useState(false);
   const gamesList = useSelector((state:RootState)=>state.games);
+  
   useGameWebSocket(player.id ?? null);
+  async function getGameList() {
+  
+    if(player.id != null && !requested)
+    {
+      console.log("requested game list");
+      
+      const response = await axios.get("http://localhost:8080/game");
+      dispatch(attachGamesList(response.data));
+      setRequested(true);
+    }
+  }
 
+  getGameList();
 
   return (
     <>

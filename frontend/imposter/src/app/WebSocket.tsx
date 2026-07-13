@@ -21,7 +21,7 @@ export const useGameWebSocket = (playerID: number | null) => {
     client.onConnect = () => {
       console.log("Connected to WebSocket");
 
-      // Subscribe to a specific game topic
+    
       client.subscribe(`/topic/game`, (message) => {
         console.log(message);
         if (message.body) {
