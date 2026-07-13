@@ -5,6 +5,7 @@ import { useGameWebSocket } from "../app/WebSocket";
 import axios from "axios";
 import { attachGamesList } from "../features/game/GamesSlice";
 import { useState } from "react";
+import { attachPlayer } from "../features/player/PlayerSlice";
 
 function Lobby() {
 
@@ -28,10 +29,19 @@ function Lobby() {
 
   getGameList();
 
+  async function assignGameToPlayer(playerID:number|null, gameID:number)
+  {
+    if(playerID)
+    {
+      const response = await axios.post("http://localhost:8080/player/" + playerID + "/game/" + gameID);
+      dispatch(attachPlayer(response.data));
+    }
+  }
+
   return (
     <>
     <CreatePlayer/>
-    {player.id == null ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
+    {player.id == null && player.game == null ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
       <thead className="bg-blue-700 text-white font-bold">
         <tr className="p-10 ">
           <td className="p-2 w-25">Game</td>
@@ -47,7 +57,7 @@ function Lobby() {
             <td className="p-2 w-25">{game.id}</td>
             <td className="p-2 w-25">{game.category}</td>
             <td className="p-2 w-25"><p className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">Not Started</p></td>
-            <td className="p-2 w-25"><p className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">Join</p></td>
+            <td className="p-2 w-25"><p onClick={()=>assignGameToPlayer(player.id, game.id)} className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">Join</p></td>
           </tr>
           ))
         }
@@ -56,6 +66,8 @@ function Lobby() {
         </tr> */}
       </tbody>
     </table>)}
+
+    {player.game != null ? (<h1>Game Category: {player.game?.category}</h1>) : (<></>)}
     
     </>
   )
