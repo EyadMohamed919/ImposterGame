@@ -3,7 +3,8 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 interface game {
     id: number,
     category: string,
-    topic: string
+    topic: string,
+    status: string
 }
 
 const initialState: game[] = [];

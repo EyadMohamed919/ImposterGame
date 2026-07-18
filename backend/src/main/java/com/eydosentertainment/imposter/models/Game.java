@@ -16,12 +16,21 @@ public class Game {
     private Long id;
     private Category category;
     private String topic;
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public Game() {
 
     }
 
-    public Game(String category, String topic) {
+    public Game(String category, String topic, String status) {
         switch (category) {
             case "movies":
                 this.category = Category.Movies;
@@ -37,6 +46,7 @@ public class Game {
         }
 
         this.topic = topic;
+        this.status = status;
     }
 
     public Long getId() {

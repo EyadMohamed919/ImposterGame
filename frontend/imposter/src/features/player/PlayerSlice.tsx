@@ -4,7 +4,8 @@ import axios from "axios";
 interface game {
     id: number,
     category: string,
-    topic: string
+    topic: string,
+    status: string
 }
 interface player {
     id: number | null,

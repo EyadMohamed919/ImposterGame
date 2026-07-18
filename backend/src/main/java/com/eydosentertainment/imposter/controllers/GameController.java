@@ -54,6 +54,29 @@ public class GameController {
         return ResponseEntity.status(201).body(createdGame);
     }
 
+    @PostMapping("/game/update/{id}")
+    public ResponseEntity<Boolean> updateStatus(@PathVariable Long id) {
+        Game game = this.gameService.getGameByID(id);
+        if(game.getStatus().equals("") || game.getStatus().equals(null))
+        {
+            game.setStatus("LOBBY");
+        }
+        else if(game.getStatus().equals("LOBBY"))
+        {
+            game.setStatus("ONGOING");
+        }
+        else if(game.getStatus().equals("ONGOING"))
+        {
+            game.setStatus("FINISHED");
+        }
+        this.messagingTemplate.convertAndSend(
+            "/topic/game/" + id, 
+            game.getStatus()
+        );
+        this.gameService.createGame(game);
+        return ResponseEntity.status(200).body(true);
+    }
+
     @DeleteMapping("/game/{id}")
     public ResponseEntity<Boolean> deleteGame(@PathVariable Long id)
     {

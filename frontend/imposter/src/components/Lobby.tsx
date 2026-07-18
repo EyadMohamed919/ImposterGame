@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "../app/store";
 import CreatePlayer from "./CreatePlayer";
-import { useGameWebSocket } from "../app/WebSocket";
+import { useGameWebSocket, connectToCurrentGameSocket } from "../app/WebSocket";
 import axios from "axios";
 import { attachGamesList } from "../features/game/GamesSlice";
 import { useState } from "react";
@@ -35,6 +35,7 @@ function Lobby() {
     {
       const response = await axios.post("http://localhost:8080/player/" + playerID + "/game/" + gameID);
       dispatch(attachPlayer(response.data));
+      connectToCurrentGameSocket(response.data.game.id);
     }
   }
 
