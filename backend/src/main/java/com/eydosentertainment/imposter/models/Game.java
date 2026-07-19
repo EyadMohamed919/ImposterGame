@@ -46,7 +46,7 @@ public class Game {
         }
 
         this.topic = topic;
-        this.status = status;
+        this.status = "LOBBY";
     }
 
     public Long getId() {

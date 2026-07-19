@@ -45,7 +45,7 @@ export const useGameWebSocket = (playerID: number | null) => {
 };
 
 // --- Hook 2: Specific Game Instance WebSocket (FIXED) ---
-export const connectToCurrentGameSocket = (id: number | null) => {
+export const useCurrentGameWebSocket = (id: number | null) => {
   const clientRef = useRef<Client | null>(null);
   console.log("We r here");
   
