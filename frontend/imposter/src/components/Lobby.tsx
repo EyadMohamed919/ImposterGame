@@ -5,6 +5,7 @@ import { useGameWebSocket, useCurrentGameWebSocket } from "../app/WebSocket";
 import axios from "axios";
 import { attachGamesList } from "../features/game/GamesSlice";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { attachPlayer } from "../features/player/PlayerSlice";
 
 function Lobby() {
@@ -13,7 +14,7 @@ function Lobby() {
   const dispatch = useDispatch();
   const [requested, setRequested] = useState(false);
   const gamesList = useSelector((state:RootState)=>state.games);
-  
+  const navigate = useNavigate();
   useGameWebSocket(player.id ?? null);
   useCurrentGameWebSocket(player.game?.id ?? null);
 
@@ -37,6 +38,7 @@ function Lobby() {
     {
       const response = await axios.post("http://localhost:8080/player/" + playerID + "/game/" + gameID);
       dispatch(attachPlayer(response.data));
+      navigate("/Game");
     }
   }
 
@@ -58,8 +60,11 @@ function Lobby() {
           <tr className=" bg-blue-300">
             <td className="p-2 w-25">{game.id}</td>
             <td className="p-2 w-25">{game.category}</td>
-            <td className="p-2 w-25"><p className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">Not Started</p></td>
-            <td className="p-2 w-25"><p onClick={()=>assignGameToPlayer(player.id, game.id)} className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">Join</p></td>
+            <td className="p-2 w-25"><p className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">{game.status}</p></td>
+            
+            {game.status != "LOBBY" ? (<td className='p-2 w-25' ><p className="cursor-not-allowed flex justify-center items-center bg-green-700/60 text-white p-2 whitespace-nowrap rounded-full">Join</p></td>) 
+            : (<td className='p-2 w-25' ><p onClick={()=>assignGameToPlayer(player.id, game.id)} className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">Join</p></td>)}
+            
           </tr>
           ))
         }

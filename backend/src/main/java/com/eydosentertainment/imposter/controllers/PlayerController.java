@@ -41,6 +41,12 @@ public class PlayerController {
         return ResponseEntity.ok(players);
     }
 
+    @PostMapping("/{gameID}/playerList") 
+    public ResponseEntity<List<Player>> getAllPlayersInGame(@PathVariable Long gameID) {
+        List<Player> players = this.playerService.getPlayersByGameID(gameID);
+        return ResponseEntity.ok(players);
+    }
+
     
 
     @GetMapping("/{id}")

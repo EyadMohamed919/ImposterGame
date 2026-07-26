@@ -31,4 +31,9 @@ public class PlayerService {
     public List<Player> getAllPlayers() {
         return playerRepository.findAll();
     }
+
+    public List<Player> getPlayersByGameID(Long id)
+    {
+        return playerRepository.findByGameId(id);
+    }
 }

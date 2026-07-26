@@ -47,8 +47,6 @@ export const useGameWebSocket = (playerID: number | null) => {
 // --- Hook 2: Specific Game Instance WebSocket (FIXED) ---
 export const useCurrentGameWebSocket = (id: number | null) => {
   const clientRef = useRef<Client | null>(null);
-  console.log("We r here");
-  
   useEffect(() => {
     if (!id) return;
 
@@ -64,6 +62,13 @@ export const useCurrentGameWebSocket = (id: number | null) => {
       client.subscribe(`/topic/game/` + id, (message) => {
         if (message.body) {
           console.log("Game Update:", message.body);
+          // Handle your state/dispatch logic for the active game here
+        }
+      });
+
+      client.subscribe("/topic/game/" + id + "/players", (message) => {
+        if (message.body) {
+          console.log("Player List:", message.body);
           // Handle your state/dispatch logic for the active game here
         }
       });
