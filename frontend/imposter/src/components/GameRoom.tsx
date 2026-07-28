@@ -6,7 +6,9 @@ export default function GameRoom() {
   const player = useSelector((state:RootState)=>state.player);
 
 //   const playerList = 
-  useCurrentGameWebSocket(player.game.id ?? null)
+  useCurrentGameWebSocket(player.game?.id ?? null)
+  console.log(player);
+  
   return (
     <div className="flex justify-center items-center flex-col">
         <h1 className="text-2xl text-white/80 font-bold m-auto">Game Room: {player.game?.id}</h1>
@@ -22,7 +24,7 @@ export default function GameRoom() {
         </tr>
       </thead>
       <tbody>
-        {
+        {/* {
           gamesList.map((game)=>(
           <tr className=" bg-blue-300">
             <td className="p-2 w-25">{game.id}</td>
@@ -34,7 +36,7 @@ export default function GameRoom() {
             
           </tr>
           ))
-        }
+        } */}
         {/* <tr className=" bg-blue-300">
           
         </tr> */}

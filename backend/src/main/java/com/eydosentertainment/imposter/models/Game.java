@@ -1,22 +1,30 @@
 package com.eydosentertainment.imposter.models;
 
+import java.util.Locale.Category;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "game")
 public class Game {
 
-    private enum Category {
-        Movies,
-        Places
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Category category;
+    private String category;
     private String topic;
     private String status;
+    private final String[] PLACES_TOPIC_ARRAY = {"Gym", "Mcdonalds", "Beach", "Garage"};
+
+    private final String[] ANIMALS_TOPIC_ARRAY = {
+        "Lion", "Penguin", "Dolphin", "Elephant", "Kangaroo", 
+        "Panda", "Cheetah", "Flamingo", "Owl", "Shark"
+    };
+
+    private final String[] JOBS_TOPIC_ARRAY = {
+        "Doctor", "Firefighter", "Chef", "Pilot", "Astronaut", 
+        "Teacher", "Police Officer", "Detective", "Mechanic", "Plumber"
+    };
 
     public String getStatus() {
         return status;
@@ -30,22 +38,34 @@ public class Game {
 
     }
 
-    public Game(String category, String topic, String status) {
+    public Game(String category) {
+        int index = 0;
         switch (category) {
-            case "movies":
-                this.category = Category.Movies;
+            case "jobs":
+                this.category = "jobs";
+                index = (int) (Math.random() * this.JOBS_TOPIC_ARRAY.length);
+                this.topic = this.JOBS_TOPIC_ARRAY[index];
                 break;
 
             case "places":
-                this.category = Category.Places;
+                this.category = "places";
+                index = (int) (Math.random() * this.PLACES_TOPIC_ARRAY.length);
+                this.topic = this.PLACES_TOPIC_ARRAY[index];
+                break;
+
+            case "animals":
+                this.category = "animals";
+                index = (int) (Math.random() * this.ANIMALS_TOPIC_ARRAY.length);
+                this.topic = this.ANIMALS_TOPIC_ARRAY[index];
                 break;
 
             default:
-                this.category = Category.Places;
+                this.category = "default";
+                this.topic = "gym";
+
                 break;
         }
 
-        this.topic = topic;
         this.status = "LOBBY";
     }
 
@@ -53,11 +73,11 @@ public class Game {
         return id;
     }
 
-    public Category getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 

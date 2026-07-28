@@ -1,14 +1,31 @@
 import { useState } from "react";
 import axios from "axios";
 import {useSelector, useDispatch } from "react-redux";
-import { attachPlayer, detachPlayer } from "../features/player/PlayerSlice";
+import { attachPlayer, detachPlayer, type game } from "../features/player/PlayerSlice";
 import type { RootState } from '../app/store';
+import { MdDelete } from "react-icons/md";
+import CreateGame from "./CreateGame";
+import { IoGameController } from "react-icons/io5";
+
 
 function CreatePlayer() {
 
     const [name, setName] = useState<string>("");
+    const [showCreateGame, setShowCreateGame] = useState<boolean>(false);
+
     const dispatch = useDispatch();
     const player = useSelector((state:RootState)=>state.player)
+
+    async function assignGame(game: game) 
+    {
+        const updatedPlayer = {
+            ...player,
+            game: game
+        };
+        
+        dispatch(attachPlayer(updatedPlayer));
+    }
+    
     async function sendPlayer()
     {
         if(name != "")
@@ -38,11 +55,20 @@ function CreatePlayer() {
             
 
             
-            
+            <div className="flex flex-row justify-center items-center">
             {player.id == null ? (<>
             <input onChange={(e)=>setName(e.target.value)} type="text" className="m-auto mt-3 p-3 text-white bg-blue-500/30  rounded-xl" placeholder="Enter your name" />
             <button onClick={()=>sendPlayer()} className="hover:cursor-pointer hover:bg-white transition-all duration-300 m-auto mt-3 px-5 p-3 bg-blue-500/70 rounded-full">Create</button>
-            </>) : (<button onClick={()=>removedPlayer()} className="hover:cursor-pointer hover:bg-white transition-all duration-300 m-auto mt-3 px-5 p-3 bg-red-500/70 rounded-full">Delete Player</button>)}
+            </>) : (
+                <>
+                {showCreateGame ? (<></>):(<button onClick={()=>setShowCreateGame(!showCreateGame)} className="ml-1 mr-1 flex flex-row justify-center items-center text-white hover:cursor-pointer hover:bg-white hover:text-green-700 transition-all duration-300 m-auto mt-3 px-5 p-3 bg-green-700/70 rounded-full"><IoGameController className="mr-1" /> Create Game</button>)}
+                <button onClick={()=>removedPlayer()} className="ml-1 mr-1 flex flex-row justify-center items-center text-white hover:cursor-pointer hover:bg-white hover:text-red-500 transition-all duration-300 m-auto mt-3 px-5 p-3 bg-red-500/70 rounded-full"><MdDelete className="mr-1" /> Delete Player</button>
+                </>
+                )}
+            </div>
+
+            {showCreateGame ? (<CreateGame joinGame={assignGame}  />): (<></>)}
+            
         </div>
      );
 }

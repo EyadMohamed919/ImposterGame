@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 
-interface game {
+export interface game {
     id: number,
     category: string,
     topic: string,
@@ -53,5 +53,4 @@ export const PlayerSlice = createSlice({
 });
 
 export const { attachPlayer, detachPlayer } = PlayerSlice.actions;
-
 export default PlayerSlice.reducer;
