@@ -7,7 +7,7 @@ export interface game {
     topic: string,
     status: string
 }
-interface player {
+export interface player {
     id: number | null,
     name: string | null,
     imposter: boolean,

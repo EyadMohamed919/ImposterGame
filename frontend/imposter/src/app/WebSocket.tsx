@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { Client } from "@stomp/stompjs";
 import { useDispatch } from "react-redux";
 import { attachGamesList } from "../features/game/GamesSlice";
+import { attachPlayerList } from "../features/player/PlayerListSlice";
 
 // --- Hook 1: General Game List WebSocket ---
 export const useGameWebSocket = (playerID: number | null) => {
@@ -44,9 +45,9 @@ export const useGameWebSocket = (playerID: number | null) => {
   }, [playerID, dispatch]);
 };
 
-// --- Hook 2: Specific Game Instance WebSocket (FIXED) ---
 export const useCurrentGameWebSocket = (id: number | null) => {
   const clientRef = useRef<Client | null>(null);
+  const dispatch = useDispatch();
   useEffect(() => {
     if (!id) return;
 
@@ -69,7 +70,8 @@ export const useCurrentGameWebSocket = (id: number | null) => {
       client.subscribe("/topic/game/" + id + "/players", (message) => {
         if (message.body) {
           console.log("Player List:", message.body);
-          // Handle your state/dispatch logic for the active game here
+          const playerList = JSON.parse(message.body)
+          dispatch(attachPlayerList(playerList));
         }
       });
     };

@@ -105,6 +105,15 @@ public class PlayerController {
 
         player.setGame(game);
         Player savedPlayer = this.playerService.createPlayer(player);
+
+
+
+
+        List<Player> players = this.playerService.getPlayersByGameID(gameID);
+        this.messagingTemplate.convertAndSend(
+            "/topic/game/" + gameID + "/players", 
+            players
+        );
         return ResponseEntity.ok(savedPlayer);
     }
 
