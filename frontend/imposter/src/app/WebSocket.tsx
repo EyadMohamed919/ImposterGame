@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Client } from "@stomp/stompjs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { attachGamesList } from "../features/game/GamesSlice";
 import { attachPlayerList } from "../features/player/PlayerListSlice";
+import type { RootState } from "./store";
+import { attachPlayer } from "../features/player/PlayerSlice";
 
 // --- Hook 1: General Game List WebSocket ---
 export const useGameWebSocket = (playerID: number | null) => {
@@ -47,6 +49,7 @@ export const useGameWebSocket = (playerID: number | null) => {
 
 export const useCurrentGameWebSocket = (id: number | null) => {
   const clientRef = useRef<Client | null>(null);
+  const player = useSelector((state:RootState)=>state.player);
   const dispatch = useDispatch();
   useEffect(() => {
     if (!id) return;
@@ -62,9 +65,22 @@ export const useCurrentGameWebSocket = (id: number | null) => {
       console.log(`Connected to Current Game Socket: ${id}`);
       client.subscribe(`/topic/game/` + id, (message) => {
         if (message.body) {
-          console.log("Game Update:", message.body);
-          // Handle your state/dispatch logic for the active game here
+        console.log("Game Update:", message.body);
+
+        const updatedStatus = message.body;
+
+        if (player?.game) {
+          const updatedPlayer = {
+            ...player,
+            game: {
+              ...player.game,
+              status: updatedStatus,
+            },
+          };
+
+          dispatch(attachPlayer(updatedPlayer));
         }
+      }
       });
 
       client.subscribe("/topic/game/" + id + "/players", (message) => {

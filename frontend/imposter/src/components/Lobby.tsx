@@ -63,7 +63,7 @@ function Lobby() {
             <td className="p-2 w-25"><p className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">{game.status}</p></td>
             
             {game.status != "LOBBY" ? (<td className='p-2 w-25' ><p className="cursor-not-allowed flex justify-center items-center bg-green-700/60 text-white p-2 whitespace-nowrap rounded-full">Join</p></td>) 
-            : (<td className='p-2 w-25' ><p onClick={()=>assignGameToPlayer(player.id, game.id)} className="flex justify-center items-center bg-green-700 text-white p-2 whitespace-nowrap rounded-full">Join</p></td>)}
+            : (<td className='p-2 w-25' ><p onClick={()=>assignGameToPlayer(player.id, game.id)} className="flex justify-center items-center bg-green-700 hover:text-green-700 hover:bg-white transition-all duration-200 hover:cursor-pointer text-white p-2 whitespace-nowrap rounded-full">Join</p></td>)}
             
           </tr>
           ))
