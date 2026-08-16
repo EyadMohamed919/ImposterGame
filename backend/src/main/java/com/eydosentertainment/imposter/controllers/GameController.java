@@ -1,7 +1,6 @@
 package com.eydosentertainment.imposter.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -14,16 +13,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eydosentertainment.imposter.models.Game;
+import com.eydosentertainment.imposter.models.Player;
 import com.eydosentertainment.imposter.services.GameService;
+import com.eydosentertainment.imposter.services.PlayerService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
     private final GameService gameService;
+    private final PlayerService playerService;
     private final SimpMessagingTemplate messagingTemplate;
-    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate) {
+    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate, PlayerService playerService) {
         this.gameService = gameService;
+        this.playerService = playerService;
         this.messagingTemplate = messagingTemplate;
     }
 
@@ -56,12 +59,23 @@ public class GameController {
 
     @PostMapping("/game/update/{id}")
     public ResponseEntity<Boolean> updateStatus(@PathVariable Long id) {
+        
         Game game = this.gameService.getGameByID(id);
         if(game.getStatus().equals("") || game.getStatus().equals(null))
         {
             game.setStatus("LOBBY");
         }
         else if(game.getStatus().equals("LOBBY"))
+        {
+            game.setStatus("ROLES");
+            List<Player> playersInGame = this.playerService.getPlayersByGameID(id); 
+            int index = (int) (Math.random() * playersInGame.size());
+            // System.out.println("Index place " + arr[index]);
+            Player imposterPlayer = playersInGame.get(index);
+            this.playerService.createPlayer(imposterPlayer);
+            game.setImposterId(playersInGame.get(index).getId());
+        }
+        else if(game.getStatus().equals("ROLES"))
         {
             game.setStatus("ONGOING");
         }

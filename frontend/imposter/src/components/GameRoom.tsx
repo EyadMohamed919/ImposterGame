@@ -30,6 +30,8 @@ export default function GameRoom() {
     <div className="flex justify-center items-center flex-col">
         <h1 className="text-2xl text-white/80 font-bold m-auto">Game Room: {player.game?.id}</h1>
         <h1 className="text-3xl text-white font-bold m-auto">Category: {player.game?.category}</h1>
+        {player.game?.imposterId == player.id ? (<h1 className="text-3xl text-white font-bold m-auto">You are imposter</h1>) : (<h1 className="text-3xl text-white font-bold m-auto">You are  not the imposter</h1>)}
+        
         <h1 className="text-2xl text-white/80 font-bold m-auto">{playerList.length + 1} Players in room</h1>
 
         {player.id == null || player.game == null || player.game.status !== "LOBBY" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">

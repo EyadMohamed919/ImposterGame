@@ -1,6 +1,5 @@
 package com.eydosentertainment.imposter.models;
 
-import java.util.Locale.Category;
 
 import jakarta.persistence.*;
 
@@ -14,6 +13,15 @@ public class Game {
     private String category;
     private String topic;
     private String status;
+    private Long imposterId;
+    public Long getImposterId() {
+        return imposterId;
+    }
+
+    public void setImposterId(Long imposterId) {
+        this.imposterId = imposterId;
+    }
+
     private final String[] PLACES_TOPIC_ARRAY = {"Gym", "Mcdonalds", "Beach", "Garage"};
 
     private final String[] ANIMALS_TOPIC_ARRAY = {

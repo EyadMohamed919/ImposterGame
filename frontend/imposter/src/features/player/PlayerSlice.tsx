@@ -5,7 +5,8 @@ export interface game {
     id: number,
     category: string,
     topic: string,
-    status: string
+    status: string,
+    imposterId: number
 }
 export interface player {
     id: number | null,
