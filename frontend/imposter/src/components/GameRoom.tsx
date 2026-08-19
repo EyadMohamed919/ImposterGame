@@ -4,6 +4,7 @@ import type { RootState } from "../app/store";
 import {useCurrentGameWebSocket, useGameWebSocket} from "../app/WebSocket";
 import { attachPlayerList } from "../features/player/PlayerListSlice";
 import { useEffect } from "react";
+import RoleCard from "./RoleCard";
 
 
 
@@ -29,18 +30,23 @@ export default function GameRoom() {
 
   async function changeGameStatus()
   {
-    const response = await axios.post("http://localhost:8080/game/update/" + player.game?.id);
+    await axios.post("http://localhost:8080/game/update/" + player.game?.id);
   }
   
   return (
     <div className="flex justify-center items-center flex-col">
         <h1 className="text-2xl text-white/80 font-bold m-auto">Game Room: {player.game?.id}</h1>
         <h1 className="text-3xl text-white font-bold m-auto">Category: {player.game?.category}</h1>
-        {player.game?.imposterId == player.id ? (<h1 className="text-3xl text-white font-bold m-auto">You are imposter</h1>) : (<h1 className="text-3xl text-white font-bold m-auto">You are  not the imposter</h1>)}
+        
         
         <h1 className="text-2xl text-white/80 font-bold m-auto">{playerList.length} Players in room</h1>
 
-        {player.id == null || player.game == null || player.game.status !== "LOBBY" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
+      <RoleCard isImposter={player.game?.imposterId == player.id} />
+      {player.id == null || player.game == null || player.game.status !== "LOBBY" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
+      
+      
+      
+      {/* Player List Table */}
       <thead className="bg-blue-700 text-white font-bold">
         <tr className="p-10 ">
           <td className="p-2 w-25">Player</td>
