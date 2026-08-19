@@ -3,6 +3,7 @@ import axios from "axios";
 import type { RootState } from "../app/store";
 import {useCurrentGameWebSocket, useGameWebSocket} from "../app/WebSocket";
 import { attachPlayerList } from "../features/player/PlayerListSlice";
+import { useEffect } from "react";
 
 
 
@@ -13,13 +14,18 @@ export default function GameRoom() {
   useGameWebSocket(player.id ?? null);
   useCurrentGameWebSocket(player.game?.id ?? null);
 
-  async function getPlayerList() {
-    const response = await axios.post("http://localhost:8080/player/" + player.game?.id + "/playerList");
-    
-    dispatch(attachPlayerList(response.data));
-  }
+  
 
-  // getPlayerList();
+  
+  useEffect(()=>{
+    async function getPlayerList() 
+    {
+      const response = await axios.post("http://localhost:8080/player/" + player.game?.id + "/playerList");
+      
+      dispatch(attachPlayerList(response.data));
+    }
+    getPlayerList();
+  }, []);
 
   async function changeGameStatus()
   {
@@ -32,7 +38,7 @@ export default function GameRoom() {
         <h1 className="text-3xl text-white font-bold m-auto">Category: {player.game?.category}</h1>
         {player.game?.imposterId == player.id ? (<h1 className="text-3xl text-white font-bold m-auto">You are imposter</h1>) : (<h1 className="text-3xl text-white font-bold m-auto">You are  not the imposter</h1>)}
         
-        <h1 className="text-2xl text-white/80 font-bold m-auto">{playerList.length + 1} Players in room</h1>
+        <h1 className="text-2xl text-white/80 font-bold m-auto">{playerList.length} Players in room</h1>
 
         {player.id == null || player.game == null || player.game.status !== "LOBBY" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
       <thead className="bg-blue-700 text-white font-bold">

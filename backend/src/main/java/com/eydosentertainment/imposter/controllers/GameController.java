@@ -17,17 +17,21 @@ import com.eydosentertainment.imposter.models.Player;
 import com.eydosentertainment.imposter.services.GameService;
 import com.eydosentertainment.imposter.services.PlayerService;
 
+import tools.jackson.databind.ObjectMapper;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class GameController {
 
     private final GameService gameService;
+    private final ObjectMapper objectMapper;
     private final PlayerService playerService;
     private final SimpMessagingTemplate messagingTemplate;
-    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate, PlayerService playerService) {
+    public GameController(GameService gameService, SimpMessagingTemplate messagingTemplate, PlayerService playerService, ObjectMapper objectMapper) {
         this.gameService = gameService;
         this.playerService = playerService;
         this.messagingTemplate = messagingTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping("/game")
@@ -83,9 +87,10 @@ public class GameController {
         {
             game.setStatus("FINISHED");
         }
+
         this.messagingTemplate.convertAndSend(
             "/topic/game/" + id, 
-            game.getStatus()
+            objectMapper.writeValueAsString(game)
         );
         this.gameService.createGame(game);
         return ResponseEntity.status(200).body(true);

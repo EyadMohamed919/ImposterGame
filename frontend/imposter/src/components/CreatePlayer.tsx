@@ -40,11 +40,8 @@ function CreatePlayer() {
     async function removedPlayer() {
         if(player.id != null)
         {
+            dispatch(detachPlayer());
             const response = await axios.delete("http://localhost:8080/player", {data:player});
-            if(response.data == true)
-            {
-                dispatch(detachPlayer())
-            }
         }
     }
 

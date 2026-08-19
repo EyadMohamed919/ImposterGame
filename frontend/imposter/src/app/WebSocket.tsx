@@ -67,15 +67,12 @@ export const useCurrentGameWebSocket = (id: number | null) => {
         if (message.body) {
         console.log("Game Update:", message.body);
 
-        const updatedStatus = message.body;
+        const game = JSON.parse(message.body);
 
         if (player?.game) {
           const updatedPlayer = {
             ...player,
-            game: {
-              ...player.game,
-              status: updatedStatus,
-            },
+            game: game,
           };
 
           dispatch(attachPlayer(updatedPlayer));
