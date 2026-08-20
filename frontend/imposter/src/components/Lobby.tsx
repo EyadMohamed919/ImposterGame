@@ -73,8 +73,6 @@ function Lobby() {
         </tr> */}
       </tbody>
     </table>)}
-
-    {player.game != null ? (<h1>Game Category: {player.game?.category}</h1>) : (<></>)}
     
     </>
   )

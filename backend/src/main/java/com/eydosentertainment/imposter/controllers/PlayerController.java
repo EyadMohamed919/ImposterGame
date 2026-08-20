@@ -117,24 +117,15 @@ public class PlayerController {
         return ResponseEntity.ok(savedPlayer);
     }
 
-    // @PostMapping("/{id}/game/")
-    // public ResponseEntity<?> assignRandomGameToPlayer(@PathVariable Long id) {
-    //     Player player = this.playerService.getPlayerByID(id);
-    //     Game game = this.gameService.getGameByID(gameID);
-
-    //     if (player == null) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Player not found"));
-    //     }
-
-    //     if (game == null) {
-    //         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Game not found"));
-    //     }
-
-    //     player.setGame(game);
-    //     Player savedPlayer = this.playerService.createPlayer(player);
-    //     return ResponseEntity.ok(savedPlayer);
-    // }
-
+    @PostMapping("/{id}/game/{gameId}/unassign")
+    public ResponseEntity<?> unassignGamefromPlayer(@PathVariable Long id, @PathVariable Long gameId)
+    {
+        Player player = this.playerService.getPlayerByID(id);
+        player.setGame(null);
+        this.playerService.createPlayer(player);
+        return ResponseEntity.ok().build();
+    }
+    
     @PostMapping("/{id}/votedPlayer/{votedPlayerID}")
     public ResponseEntity<?> voteOnPlayer(@PathVariable Long id, @PathVariable Long votedPlayerID) {
         Player player = this.playerService.getPlayerByID(id);

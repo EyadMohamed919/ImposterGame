@@ -5,6 +5,7 @@ import {useCurrentGameWebSocket, useGameWebSocket} from "../app/WebSocket";
 import { attachPlayerList } from "../features/player/PlayerListSlice";
 import { useEffect } from "react";
 import RoleCard from "./RoleCard";
+import Button from "./mini-components/Button";
 
 
 
@@ -30,7 +31,9 @@ export default function GameRoom() {
 
   async function changeGameStatus()
   {
-    await axios.post("http://localhost:8080/game/update/" + player.game?.id);
+    const response = await axios.post("http://localhost:8080/game/update/" + player.game?.id);
+    console.error(response.data);
+    
   }
   
   return (
@@ -41,7 +44,7 @@ export default function GameRoom() {
         
         <h1 className="text-2xl text-white/80 font-bold m-auto">{playerList.length} Players in room</h1>
 
-      <RoleCard isImposter={player.game?.imposterId == player.id} />
+      {player.game?.status == "ROLE" ? (<RoleCard isImposter={player.game?.imposterId == player.id} />) : (<></>)}
       {player.id == null || player.game == null || player.game.status !== "LOBBY" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
       
       
@@ -66,6 +69,7 @@ export default function GameRoom() {
       </tbody>
     </table>)}
 
+    {/* <Button onClick={changeGameStatus()} bgColor="bg-green-700/70" borderColor="white" bgHoverColor="hover:bg-white" borderHoverColor="hover:border-green-700" textColor="text-white" textHoverColor="hover:text-green-500"></Button> */}
     <button onClick={()=>changeGameStatus()} className="flex flex-row justify-center items-center text-white hover:cursor-pointer hover:bg-white hover:border-green-700 hover:border-solid border-2 hover:text-green-500 transition-all duration-300 m-auto mt-3 px-5 p-3 bg-green-700/70 rounded-full">Start Game</button>
     </div>
   )

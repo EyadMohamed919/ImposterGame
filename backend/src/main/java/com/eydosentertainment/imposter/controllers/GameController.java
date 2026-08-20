@@ -1,6 +1,7 @@
 package com.eydosentertainment.imposter.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -62,9 +63,14 @@ public class GameController {
     }
 
     @PostMapping("/game/update/{id}")
-    public ResponseEntity<Boolean> updateStatus(@PathVariable Long id) {
+    public ResponseEntity<?> updateStatus(@PathVariable Long id) {
         
         Game game = this.gameService.getGameByID(id);
+        List<Player> playersInGame = this.playerService.getPlayersByGameID(id);
+        if(playersInGame.size() <= 0)
+        {
+            return ResponseEntity.status(200).body(Map.of("error","not enough players in game"));
+        }
         if(game.getStatus().equals("") || game.getStatus().equals(null))
         {
             game.setStatus("LOBBY");
@@ -72,7 +78,7 @@ public class GameController {
         else if(game.getStatus().equals("LOBBY"))
         {
             game.setStatus("ROLES");
-            List<Player> playersInGame = this.playerService.getPlayersByGameID(id); 
+             
             int index = (int) (Math.random() * playersInGame.size());
             // System.out.println("Index place " + arr[index]);
             Player imposterPlayer = playersInGame.get(index);
@@ -88,12 +94,13 @@ public class GameController {
             game.setStatus("FINISHED");
         }
 
+        
         this.messagingTemplate.convertAndSend(
             "/topic/game/" + id, 
             objectMapper.writeValueAsString(game)
         );
         this.gameService.createGame(game);
-        return ResponseEntity.status(200).body(true);
+        return ResponseEntity.status(200).body(Map.of("message","updated game status"));
     }
 
     @DeleteMapping("/game/{id}")
