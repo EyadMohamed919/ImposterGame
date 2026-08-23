@@ -12,16 +12,19 @@ import Button from "./mini-components/Button";
 export default function GameRoom() {
   const player = useSelector((state:RootState)=>state.player);
   const playerList = useSelector((state:RootState)=>state.playerListInGame);
+  const futureTime = new Date(2026, 7, 23, 18, 55);
   const dispatch = useDispatch();
+  const currentTime = new Date();
   useGameWebSocket(player.id ?? null);
   useCurrentGameWebSocket(player.game?.id ?? null);
 
   
-
   
   useEffect(()=>{
     async function getPlayerList() 
     {
+      
+      
       const response = await axios.post("http://localhost:8080/player/" + player.game?.id + "/playerList");
       
       dispatch(attachPlayerList(response.data));
@@ -40,13 +43,12 @@ export default function GameRoom() {
     <div className="flex justify-center items-center flex-col">
         <h1 className="text-2xl text-white/80 font-bold m-auto">Game Room: {player.game?.id}</h1>
         <h1 className="text-3xl text-white font-bold m-auto">Category: {player.game?.category}</h1>
-        
+        <p>{futureTime.getMinutes() - currentTime.getMinutes()}:{ Math.abs(futureTime.getSeconds() -currentTime.getSeconds())}</p>
         
         <h1 className="text-2xl text-white/80 font-bold m-auto">{playerList.length} Players in room</h1>
 
-      {player.game?.status == "ROLE" ? (<RoleCard isImposter={player.game?.imposterId == player.id} />) : (<></>)}
+      {player.game?.status == "ROLES" ? (<RoleCard isImposter={player.game?.imposterId == player.id} />) : (<></>)}
       {player.id == null || player.game == null || player.game.status !== "LOBBY" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
-      
       
       
       {/* Player List Table */}
