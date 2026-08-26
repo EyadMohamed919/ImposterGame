@@ -42,6 +42,12 @@ function Lobby() {
     }
   }
 
+  // If game is assigned, direct the player to the game
+  if(player.game)
+  {
+    navigate("/Game")
+  }
+
   return (
     <>
     <CreatePlayer/>

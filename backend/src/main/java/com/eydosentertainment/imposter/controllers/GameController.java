@@ -93,6 +93,10 @@ public class GameController {
         {
             game.setStatus("FINISHED");
         }
+        else if(game.getStatus().equals("FINISHED"))
+        {
+            game.setStatus("LOBBY");
+        }
 
         
         this.messagingTemplate.convertAndSend(
