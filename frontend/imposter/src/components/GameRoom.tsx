@@ -39,10 +39,6 @@ export default function GameRoom() {
   {
     const response = await axios.post("http://localhost:8080/game/update/" + player.game?.id);
     console.error(response.data);
-    // if(player.game?.status == "ONGOING")
-    // {
-    //   startTimer();
-    // }
   }
 
 
@@ -68,7 +64,6 @@ export default function GameRoom() {
     return () => clearTimeout(timer);
 
   }, [timeLeftInSeconds, player.game?.status]);
-  
   
   
   return (
