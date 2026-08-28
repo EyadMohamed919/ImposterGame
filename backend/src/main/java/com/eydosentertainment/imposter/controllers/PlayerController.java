@@ -20,6 +20,8 @@ import com.eydosentertainment.imposter.models.Player;
 import com.eydosentertainment.imposter.services.GameService;
 import com.eydosentertainment.imposter.services.PlayerService;
 
+import tools.jackson.databind.ObjectMapper;
+
 @RestController
 @RequestMapping("/player")
 @CrossOrigin(origins = "http://localhost:5173")
@@ -28,11 +30,13 @@ public class PlayerController {
     private final PlayerService playerService;
     private final GameService gameService;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ObjectMapper objectMapper;
 
-    public PlayerController(PlayerService playerService, GameService gameService, SimpMessagingTemplate messagingTemplate) {
+    public PlayerController(PlayerService playerService, GameService gameService, SimpMessagingTemplate messagingTemplate, ObjectMapper objectMapper) {
         this.playerService = playerService;
         this.gameService = gameService;
         this.messagingTemplate = messagingTemplate;
+        this.objectMapper = objectMapper;
     }
 
     @GetMapping
@@ -126,33 +130,17 @@ public class PlayerController {
         return ResponseEntity.ok().build();
     }
     
-    @PostMapping("/{id}/votedPlayer/{votedPlayerID}")
-    public ResponseEntity<?> voteOnPlayer(@PathVariable Long id, @PathVariable Long votedPlayerID) {
+    @PostMapping("/{id}/voteOn")
+    public ResponseEntity<?> voteOnPlayer(@PathVariable Long id) {
         Player player = this.playerService.getPlayerByID(id);
-        Player votedPlayer = this.playerService.getPlayerByID(votedPlayerID);
-
-        if (player == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Player not found"));
-        }
-
-        if (votedPlayer == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Voted Player not found"));
-        }
-
-        if (votedPlayer.getId() == player.getId()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("error", "Player cannot vote on themselves"));
-        }
-
-        player.setVotedPlayer(votedPlayer);
-        Player savedPlayer = this.playerService.createPlayer(player);
-
-        String stats = savedPlayer.getName() + " voted on " + votedPlayer.getName();
-
+        player.setVotesOn(player.getVotesOn() + 1);
+        this.playerService.createPlayer(player);
+        List<Player> players = this.playerService.getPlayersByGameID(player.getGame().getId());
+        
         this.messagingTemplate.convertAndSend(
-            "/topic/game/" + savedPlayer.getGame().getId(), 
-            stats
+            "/topic/game/" + player.getGame().getId() + "/players", 
+            players
         );
-        return ResponseEntity.ok(savedPlayer);
+        return ResponseEntity.ok(player);
     }
 }

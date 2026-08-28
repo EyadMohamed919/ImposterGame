@@ -51,15 +51,33 @@ public class GameController {
         return ResponseEntity.ok(game);
     }
 
-    @PostMapping("/game")
-    public ResponseEntity<Game> createGame(@RequestBody Game game) {
+    @PostMapping("/game/player/{playerID}")
+    public ResponseEntity<Game> createGame(@RequestBody Game game, @PathVariable Long playerID) {
         Game createdGame = this.gameService.createGame(game);
+        Player player = this.playerService.getPlayerByID(playerID);
+        player.setGame(createdGame);
+        this.playerService.createPlayer(player);
         List<Game> games = this.gameService.getAllGames();
         this.messagingTemplate.convertAndSend(
             "/topic/game", 
             games
         );
         return ResponseEntity.status(201).body(createdGame);
+    }
+
+    @PostMapping("/game/update/{id}/voting")
+    public ResponseEntity<?> updateStatusToVoting(@PathVariable Long id) {
+        Game game = this.gameService.getGameByID(id);
+        if(game.getStatus().equals("ONGOING"))
+        {
+            game.setStatus("VOTING");
+        }
+        this.messagingTemplate.convertAndSend(
+            "/topic/game/" + id, 
+            objectMapper.writeValueAsString(game)
+        );
+        this.gameService.createGame(game);
+        return ResponseEntity.status(200).body(Map.of("message","updated game status"));
     }
 
     @PostMapping("/game/update/{id}")
@@ -80,7 +98,7 @@ public class GameController {
             game.setStatus("ROLES");
              
             int index = (int) (Math.random() * playersInGame.size());
-            // System.out.println("Index place " + arr[index]);
+
             Player imposterPlayer = playersInGame.get(index);
             this.playerService.createPlayer(imposterPlayer);
             game.setImposterId(playersInGame.get(index).getId());
@@ -91,8 +109,13 @@ public class GameController {
         }
         else if(game.getStatus().equals("ONGOING"))
         {
+            game.setStatus("VOTING");
+        }
+        else if(game.getStatus().equals("VOTING"))
+        {
             game.setStatus("FINISHED");
         }
+
         else if(game.getStatus().equals("FINISHED"))
         {
             game.setStatus("LOBBY");

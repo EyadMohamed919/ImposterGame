@@ -1,5 +1,4 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
 
 export interface game {
     id: number,
@@ -13,7 +12,7 @@ export interface player {
     name: string | null,
     imposter: boolean,
     game: game | null,
-    votedPlayer: player | null
+    votesOn: number | 0
 }
 
 const storedPlayer = localStorage.getItem("player");
@@ -25,7 +24,7 @@ const initialState: player = storedPlayer
         name: null,
         imposter: false,
         game: null,
-        votedPlayer: null
+        votesOn: 0
       };
 
 export const PlayerSlice = createSlice({
@@ -37,7 +36,7 @@ export const PlayerSlice = createSlice({
             state.name = action.payload.name;
             state.imposter = action.payload.imposter;
             state.game = action.payload.game;
-            state.votedPlayer = action.payload.votedPlayer;
+            state.votesOn = action.payload.votesOn;
 
             localStorage.setItem("player", JSON.stringify(action.payload));
         },
@@ -46,7 +45,7 @@ export const PlayerSlice = createSlice({
             state.name = null;
             state.imposter = false;
             state.game = null;
-            state.votedPlayer = null;    
+            state.votesOn = 0;    
             
             localStorage.removeItem("player");
         }

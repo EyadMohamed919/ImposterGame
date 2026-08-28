@@ -16,27 +16,25 @@ public class Player {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "voted_player_id") // 2. This creates a foreign key column in your database
-    private Player votedPlayer;
+    private int votesOn;
 
-    public Player(String name, boolean imposter, Game game, Player votedPlayer) {
+    public Player(String name, boolean imposter, Game game, int votesOn) {
         this.name = name;
         this.imposter = imposter;
         this.game = game;
-        this.votedPlayer = votedPlayer;
+        this.votesOn = votesOn;
     }
 
     public Player() {
 
     }
 
-    public Player getVotedPlayer() {
-        return votedPlayer;
+    public int getVotesOn() {
+        return votesOn;
     }
 
-    public void setVotedPlayer(Player votedPlayer) {
-        this.votedPlayer = votedPlayer;
+    public void setVotesOn(int votesOn) {
+        this.votesOn = votesOn;
     }
 
     public Long getId() {

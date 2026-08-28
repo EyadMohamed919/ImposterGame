@@ -6,16 +6,18 @@ import { attachPlayerList } from "../features/player/PlayerListSlice";
 import { useEffect, useState } from "react";
 import RoleCard from "./RoleCard";
 import Button from "./mini-components/Button";
+import { attachPlayer } from "../features/player/PlayerSlice";
+import { useNavigate } from "react-router-dom";
 
 
 
 export default function GameRoom() {
   const player = useSelector((state:RootState)=>state.player);
   const playerList = useSelector((state:RootState)=>state.playerListInGame);
-  
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [timerDisplay, setTimerDisplay] = useState("00:00");
-  const [timeLeftInSeconds, setTimeLeftInSeconds] = useState(180);
+  const [timeLeftInSeconds, setTimeLeftInSeconds] = useState(10);
   useGameWebSocket(player.id ?? null);
   useCurrentGameWebSocket(player.game?.id ?? null);
 
@@ -33,7 +35,22 @@ export default function GameRoom() {
     getPlayerList();
   }, []);
 
+  function exitGame()
+  {
+    const updatedPlayer = {
+            ...player,
+            game: null,
+          };
 
+    dispatch(attachPlayer(updatedPlayer));
+    navigate("/");
+  }
+
+  async function vote(playerID:number)
+  {
+    const response = await axios.post("http://localhost:8080/player/" + playerID + "/voteOn");
+    console.log(response.data);
+  }
 
   async function changeGameStatus()
   {
@@ -41,12 +58,18 @@ export default function GameRoom() {
     console.error(response.data);
   }
 
+  async function changeGameStatusToVoting()
+  {
+    const response = await axios.post("http://localhost:8080/game/update/" + player.game?.id + "/voting");
+    console.log(response.data);
+  }
+
 
   useEffect(() => {
     if (player.game?.status !== "ONGOING") return;
 
     if (timeLeftInSeconds <= 0) {
-      changeGameStatus();
+      changeGameStatusToVoting();
       return;
     }
 
@@ -80,19 +103,26 @@ export default function GameRoom() {
 
 
       {/* Player List Table */}
-      {player.id == null || player.game == null || player.game.status !== "LOBBY" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
+      {player.id == null || player.game == null || player.game.status !== "LOBBY" && player.game.status !== "VOTING" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
       <thead className="bg-blue-700 text-white font-bold">
         <tr className="p-10 ">
           <td className="p-2 w-25">Player</td>
           <td className="p-2 w-25">ID</td>
+          {player.game?.status == "VOTING" ? (<td className="p-2 w-25">Votes On</td>):(<></>)}
+          {player.game?.status == "VOTING" ? (<td className="p-2 w-25">Vote</td>):(<></>)}
         </tr>
       </thead>
+      
       <tbody>
         {
-          playerList.map((player)=>(
+          playerList.map((playerRow)=>(
           <tr className=" bg-blue-300">
-            <td className="p-2 w-25">{player.name}</td>
-            <td className="p-2 w-25">{player.id}</td>
+            <td className="p-2 w-25">{playerRow.name}</td>
+            <td className="p-2 w-25">{playerRow.id}</td>
+            {player.game?.status == "VOTING" ? (<td className="p-2 w-25">{playerRow.votesOn}</td>):(<></>)}
+            {player.game?.status == "VOTING" && player.id != playerRow.id ? (
+              <td className="p-2 w-25 flex justify-center items-center"><button onClick={()=>vote(player.id ?? 0)} className="default-button-green">Vote</button></td>
+              ):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
           </tr>
           )) 
         }
@@ -101,7 +131,12 @@ export default function GameRoom() {
     </table>)}
 
     {/* <Button onClick={changeGameStatus()} bgColor="bg-green-700/70" borderColor="white" bgHoverColor="hover:bg-white" borderHoverColor="hover:border-green-700" textColor="text-white" textHoverColor="hover:text-green-500"></Button> */}
-    {player.game?.status == "ONGOING" ? (<></>):(<button onClick={()=>changeGameStatus()} className="flex flex-row justify-center items-center text-white hover:cursor-pointer hover:bg-white hover:border-green-700 hover:border-solid border-2 hover:text-green-500 transition-all duration-300 m-auto mt-3 px-5 p-3 bg-green-700/70 rounded-full">{player.game?.status == "FINISHED" ? (<>Restart</>):(<>Start Game</>)}</button>)}
+    
+    <div className="flex-row flex justify-center items-center">
+      {player.game?.status == "ONGOING" ? (<></>):(<button onClick={()=>changeGameStatus()} className="default-button-green">{player.game?.status == "FINISHED" ? (<>Restart</>):(<>Start Game</>)}</button>)}
+      <button onClick={()=>exitGame()} className="default-button-red">Exit</button>
+    </div>
+    
     
     </div>
   )

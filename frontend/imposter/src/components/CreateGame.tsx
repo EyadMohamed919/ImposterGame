@@ -3,6 +3,8 @@ import { useState } from "react";
 import { IoGameController } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 import {type game} from "../features/player/PlayerSlice";
+import { useSelector } from "react-redux";
+import type { RootState } from "../app/store";
 
 interface CreateGameProps {
     joinGame: (game: game) => void;
@@ -11,10 +13,11 @@ function CreateGame({joinGame}:CreateGameProps)
 {
     
     const [category, setCategory] = useState("Movies");
+    const player = useSelector((state:RootState)=>state.player);
     const navigate = useNavigate();
     async function sendCreateGame()
     {
-        const response = await axios.post("http://localhost:8080/game", {
+        const response = await axios.post("http://localhost:8080/game/player/" + player.id, {
             "category":category
         });
 
