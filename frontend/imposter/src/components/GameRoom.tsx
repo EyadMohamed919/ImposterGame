@@ -36,12 +36,16 @@ export default function GameRoom() {
 
   async function exitGame()
   {
-    const response = await axios.post("http://localhost:8080/player/" + player.game?.id + "/game/" + player.game?.id + "/unassign");
-    if(response.data)
+    const response = await axios.post("http://localhost:8080/player/" + player.id + "/game/" + player.game?.id + "/unassign");
+    
+    if(response.status == 200)
     {
       const updatedPlayer = {
               ...player,
               game: null,
+              imposter:false,
+              votesOn:0,
+              voted:false,
             };
   
       dispatch(attachPlayer(updatedPlayer));
@@ -51,8 +55,18 @@ export default function GameRoom() {
 
   async function vote(playerID:number)
   {
-    const response = await axios.post("http://localhost:8080/player/" + playerID + "/voteOn");
+    const response = await axios.post("http://localhost:8080/player/" + player.id + "/voteOn/" + playerID);
     console.log(response.data);
+     if(response.data)
+    {
+      const updatedPlayer = {
+              ...player,
+              voted:true,
+            };
+  
+      dispatch(attachPlayer(updatedPlayer));
+    }
+
   }
 
   async function changeGameStatus()
@@ -125,7 +139,7 @@ export default function GameRoom() {
             {player.game?.status == "VOTING" ? (<td className="p-2 w-25">{playerRow.votesOn}</td>):(<></>)}
             {player.game?.status == "VOTING" ? (
               <td className="p-2 w-25 flex justify-center items-center">
-                {player.id != playerRow.id ? (<button onClick={()=>vote(player.id ?? 0)} className="default-button-green">Vote</button>):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
+                {player.id != playerRow.id || player.voted ? (<button onClick={()=>vote(player.id ?? 0)} className="default-button-green">Vote</button>):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
                 
                 </td>
               ):(<></>)}

@@ -17,12 +17,22 @@ public class Player {
     private Game game;
 
     private int votesOn;
+    private boolean voted;
 
-    public Player(String name, boolean imposter, Game game, int votesOn) {
+    public boolean isVoted() {
+        return voted;
+    }
+
+    public void setVoted(boolean voted) {
+        this.voted = voted;
+    }
+
+    public Player(String name, boolean imposter, Game game, int votesOn, boolean voted) {
         this.name = name;
         this.imposter = imposter;
         this.game = game;
         this.votesOn = votesOn;
+        this.voted = false;
     }
 
     public Player() {

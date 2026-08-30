@@ -128,15 +128,33 @@ public class PlayerController {
         player.setGame(null);
         player.setVotesOn(0);
         player.setImposter(false);
+        player.setVoted(false);
         this.playerService.createPlayer(player);
+
+        List<Player> players = this.playerService.getPlayersByGameID(gameId);
+        
+        this.messagingTemplate.convertAndSend(
+            "/topic/game/" + gameId + "/players", 
+            players
+        );
+
         return ResponseEntity.ok().build();
     }
     
-    @PostMapping("/{id}/voteOn")
-    public ResponseEntity<?> voteOnPlayer(@PathVariable Long id) {
+    @PostMapping("/{id}/voteOn/{playerID}")
+    public ResponseEntity<?> voteOnPlayer(@PathVariable Long id, @PathVariable Long playerID) {
         Player player = this.playerService.getPlayerByID(id);
-        player.setVotesOn(player.getVotesOn() + 1);
-        this.playerService.createPlayer(player);
+        Player playerToBeVotedOn = this.playerService.getPlayerByID(playerID);
+        
+        if(!player.isVoted())
+        {
+            playerToBeVotedOn.setVotesOn(playerToBeVotedOn.getVotesOn() + 1);
+            this.playerService.createPlayer(playerToBeVotedOn);
+
+            player.setVoted(true);
+            this.playerService.createPlayer(player);
+        }
+
         List<Player> players = this.playerService.getPlayersByGameID(player.getGame().getId());
         
         this.messagingTemplate.convertAndSend(

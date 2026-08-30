@@ -13,6 +13,7 @@ export interface player {
     imposter: boolean,
     game: game | null,
     votesOn: number | 0
+    voted: boolean | false
 }
 
 const storedPlayer = localStorage.getItem("player");
