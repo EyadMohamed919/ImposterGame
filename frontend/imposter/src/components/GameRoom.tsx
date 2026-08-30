@@ -27,7 +27,6 @@ export default function GameRoom() {
     async function getPlayerList() 
     {
       
-      
       const response = await axios.post("http://localhost:8080/player/" + player.game?.id + "/playerList");
       
       dispatch(attachPlayerList(response.data));
@@ -35,15 +34,19 @@ export default function GameRoom() {
     getPlayerList();
   }, []);
 
-  function exitGame()
+  async function exitGame()
   {
-    const updatedPlayer = {
-            ...player,
-            game: null,
-          };
-
-    dispatch(attachPlayer(updatedPlayer));
-    navigate("/");
+    const response = await axios.post("http://localhost:8080/player/" + player.game?.id + "/game/" + player.game?.id + "/unassign");
+    if(response.data)
+    {
+      const updatedPlayer = {
+              ...player,
+              game: null,
+            };
+  
+      dispatch(attachPlayer(updatedPlayer));
+      navigate("/");
+    }
   }
 
   async function vote(playerID:number)
@@ -97,7 +100,7 @@ export default function GameRoom() {
         
         <h1 className="text-2xl text-white/80 font-bold m-auto">{playerList.length} Players in room</h1>
 
-      {player.game?.status == "ROLES" ? (<RoleCard isImposter={player.game?.imposterId == player.id} />) : (<></>)}
+      {player.game?.status == "ROLES" ? (<RoleCard word={player.game.topic} isImposter={player.game?.imposterId == player.id} />) : (<></>)}
 
       {player.game?.status == "ONGOING" ? (<p className="p-7 bg-white font-bold text-3xl text-blue-600 pr-15 pl-15 rounded-full m-auto mt-5 mb-5">{timerDisplay}</p>):(<></>)}
 
@@ -120,9 +123,12 @@ export default function GameRoom() {
             <td className="p-2 w-25">{playerRow.name}</td>
             <td className="p-2 w-25">{playerRow.id}</td>
             {player.game?.status == "VOTING" ? (<td className="p-2 w-25">{playerRow.votesOn}</td>):(<></>)}
-            {player.game?.status == "VOTING" && player.id != playerRow.id ? (
-              <td className="p-2 w-25 flex justify-center items-center"><button onClick={()=>vote(player.id ?? 0)} className="default-button-green">Vote</button></td>
-              ):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
+            {player.game?.status == "VOTING" ? (
+              <td className="p-2 w-25 flex justify-center items-center">
+                {player.id != playerRow.id ? (<button onClick={()=>vote(player.id ?? 0)} className="default-button-green">Vote</button>):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
+                
+                </td>
+              ):(<></>)}
           </tr>
           )) 
         }

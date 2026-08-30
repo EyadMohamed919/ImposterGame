@@ -126,6 +126,8 @@ public class PlayerController {
     {
         Player player = this.playerService.getPlayerByID(id);
         player.setGame(null);
+        player.setVotesOn(0);
+        player.setImposter(false);
         this.playerService.createPlayer(player);
         return ResponseEntity.ok().build();
     }
