@@ -82,6 +82,7 @@ public class PlayerController {
     public ResponseEntity<Player> createPlayer(@RequestBody Map<String, String> payload) {
         Player player = new Player();
         player.setName(payload.get("name"));
+        player.setProfilePic(payload.get("picURL"));
         Player createdPlayer = this.playerService.createPlayer(player);
         return ResponseEntity.status(201).body(createdPlayer);
     }

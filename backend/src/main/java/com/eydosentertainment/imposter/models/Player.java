@@ -11,6 +11,15 @@ public class Player {
     private Long id;
     private String name;
     private Boolean imposter = false;
+    private String profilePic;
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 
     @ManyToOne
     @JoinColumn(name = "game_id")
@@ -27,12 +36,13 @@ public class Player {
         this.voted = voted;
     }
 
-    public Player(String name, boolean imposter, Game game, int votesOn, boolean voted) {
+    public Player(String name, boolean imposter, Game game, int votesOn, boolean voted, String profilePic) {
         this.name = name;
         this.imposter = imposter;
         this.game = game;
         this.votesOn = votesOn;
         this.voted = false;
+        this.profilePic = profilePic;
     }
 
     public Player() {

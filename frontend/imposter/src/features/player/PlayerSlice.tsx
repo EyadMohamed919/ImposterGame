@@ -10,6 +10,7 @@ export interface game {
 export interface player {
     id: number | null,
     name: string | null,
+    profilePic: string | undefined,
     imposter: boolean,
     game: game | null,
     votesOn: number | 0
@@ -25,7 +26,9 @@ const initialState: player = storedPlayer
         name: null,
         imposter: false,
         game: null,
-        votesOn: 0
+        votesOn: 0,
+        voted: false,
+        profilePic: undefined
       };
 
 export const PlayerSlice = createSlice({
