@@ -21,7 +21,8 @@ import com.eydosentertainment.imposter.services.PlayerService;
 import tools.jackson.databind.ObjectMapper;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+// @CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://192.168.1.110:5173")
 public class GameController {
 
     private final GameService gameService;

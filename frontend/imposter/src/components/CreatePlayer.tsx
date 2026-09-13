@@ -7,9 +7,8 @@ import { MdDelete } from "react-icons/md";
 import CreateGame from "./CreateGame";
 import { IoGameController } from "react-icons/io5";
 
-
 function CreatePlayer() {
-
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const [name, setName] = useState<string>("");
     const [showCreateGame, setShowCreateGame] = useState<boolean>(false);
 
@@ -28,15 +27,19 @@ function CreatePlayer() {
     
     async function sendPlayer()
     {
+        
         if(name != "")
         {
             const randomPic = await axios.get("https://picsum.photos/200");
-            const picURL =  randomPic.request.res?.responseUrl || randomPic.request.responseURL;
             
-            const response = await axios.post("http://localhost:8080/player", {
+            const picURL =  randomPic.request.res?.responseUrl || randomPic.request.responseURL;
+            const response = await axios.post(BACKEND_URL + "/player", {
                 "name":name,
                 "picURL":picURL
             });
+            
+
+            
             dispatch(attachPlayer(response.data));
         }
     }
@@ -45,7 +48,7 @@ function CreatePlayer() {
         if(player.id != null)
         {
             dispatch(detachPlayer());
-            const response = await axios.delete("http://localhost:8080/player", {data:player});
+            const response = await axios.delete(BACKEND_URL + "/player", {data:player});
         }
     }
 

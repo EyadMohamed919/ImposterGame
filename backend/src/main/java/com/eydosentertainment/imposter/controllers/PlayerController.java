@@ -20,11 +20,14 @@ import com.eydosentertainment.imposter.models.Player;
 import com.eydosentertainment.imposter.services.GameService;
 import com.eydosentertainment.imposter.services.PlayerService;
 
+import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.ObjectMapper;
 
+@Slf4j
 @RestController
 @RequestMapping("/player")
-@CrossOrigin(origins = "http://localhost:5173")
+// @CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://192.168.1.110:5173")
 public class PlayerController {
 
     private final PlayerService playerService;
@@ -125,6 +128,7 @@ public class PlayerController {
     @PostMapping("/{id}/game/{gameId}/unassign")
     public ResponseEntity<?> unassignGamefromPlayer(@PathVariable Long id, @PathVariable Long gameId)
     {
+        // resetting player 
         Player player = this.playerService.getPlayerByID(id);
         player.setGame(null);
         player.setVotesOn(0);
@@ -138,6 +142,22 @@ public class PlayerController {
             "/topic/game/" + gameId + "/players", 
             players
         );
+
+        // Deleting game
+        log.info("Testing info");
+        
+        if(this.playerService.getPlayersByGameID(gameId).isEmpty())
+        {
+            Game game = this.gameService.getGameByID(gameId);
+            this.gameService.deleteGame(game);
+
+            List<Game> games = this.gameService.getAllGames();
+            this.messagingTemplate.convertAndSend(
+                "/topic/game", 
+                games
+            );
+        }
+
 
         return ResponseEntity.ok().build();
     }

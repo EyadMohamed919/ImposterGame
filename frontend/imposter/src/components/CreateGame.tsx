@@ -11,13 +11,13 @@ interface CreateGameProps {
 }
 function CreateGame({joinGame}:CreateGameProps)
 {
-    
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     const [category, setCategory] = useState("Movies");
     const player = useSelector((state:RootState)=>state.player);
     const navigate = useNavigate();
     async function sendCreateGame()
     {
-        const response = await axios.post("http://localhost:8080/game/player/" + player.id, {
+        const response = await axios.post(BACKEND_URL + "/game/player/" + player.id, {
             "category":category
         });
 

@@ -10,6 +10,7 @@ import { attachPlayer } from "../features/player/PlayerSlice";
 
 function Lobby() {
 
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const player = useSelector((state:RootState)=>state.player);
   const dispatch = useDispatch();
   const [requested, setRequested] = useState(false);
@@ -24,7 +25,7 @@ function Lobby() {
     {
       console.log("requested game list");
       
-      const response = await axios.get("http://localhost:8080/game");
+      const response = await axios.get(BACKEND_URL + "/game");
       dispatch(attachGamesList(response.data));
       setRequested(true);
     }
@@ -36,7 +37,7 @@ function Lobby() {
   {
     if(playerID)
     {
-      const response = await axios.post("http://localhost:8080/player/" + playerID + "/game/" + gameID);
+      const response = await axios.post(BACKEND_URL + "/player/" + playerID + "/game/" + gameID);
       dispatch(attachPlayer(response.data));
       navigate("/Game");
     }

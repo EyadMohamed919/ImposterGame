@@ -10,12 +10,13 @@ import { attachPlayer } from "../features/player/PlayerSlice";
 export const useGameWebSocket = (playerID: number | null) => {
   const dispatch = useDispatch();
   const clientRef = useRef<Client | null>(null);
+  const VITE_WEBSOCKET_BACKEND_URL = import.meta.env.VITE_WEBSOCKET_BACKEND_URL;
 
   useEffect(() => {
     if (!playerID) return;
 
     const client = new Client({
-      brokerURL: "ws://localhost:8080/imposter-websocket", 
+      brokerURL: VITE_WEBSOCKET_BACKEND_URL + "/imposter-websocket", 
       reconnectDelay: 5000, 
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,
@@ -48,14 +49,17 @@ export const useGameWebSocket = (playerID: number | null) => {
 };
 
 export const useCurrentGameWebSocket = (id: number | null) => {
+  
+  const VITE_WEBSOCKET_BACKEND_URL = import.meta.env.VITE_WEBSOCKET_BACKEND_URL;
   const clientRef = useRef<Client | null>(null);
   const player = useSelector((state:RootState)=>state.player);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!id) return;
 
     const client = new Client({
-      brokerURL: "ws://localhost:8080/imposter-websocket",
+      brokerURL: VITE_WEBSOCKET_BACKEND_URL + "/imposter-websocket",
       reconnectDelay: 5000, 
       heartbeatIncoming: 4000,
       heartbeatOutgoing: 4000,

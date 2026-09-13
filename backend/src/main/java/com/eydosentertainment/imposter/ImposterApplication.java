@@ -11,29 +11,4 @@ public class ImposterApplication {
 		SpringApplication.run(ImposterApplication.class, args);
 	}
 
-	// @Bean
-	// CommandLineRunner runner(GameService gameService, PlayerService
-	// playerService) {
-	// return args -> {
-
-	// Game game = new Game("places", "McDonalds", null);
-	// // System.out.println(gameService.);
-	// Player player1 = new Player();
-	// Player player2 = new Player();
-	// player1.setName("Hamada");
-	// player1.setImposter(false);
-	// player2.setName("Mark");
-	// player2.setImposter(false);
-
-	// player1 = playerService.createPlayer(player1);
-	// player2 = playerService.createPlayer(player2);
-
-	// ArrayList<Player> playerList = new ArrayList<Player>();
-	// playerList.add(player1);
-	// playerList.add(player2);
-	// game.setPlayerList(playerList);
-	// gameService.createGame(game);
-	// };
-	// }
-
 }

@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 
 export default function GameRoom() {
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
   const player = useSelector((state:RootState)=>state.player);
   const playerList = useSelector((state:RootState)=>state.playerListInGame);
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export default function GameRoom() {
     async function getPlayerList() 
     {
       
-      const response = await axios.post("http://localhost:8080/player/" + player.game?.id + "/playerList");
+      const response = await axios.post(BACKEND_URL + "/player/" + player.game?.id + "/playerList");
       
       dispatch(attachPlayerList(response.data));
     }
@@ -36,7 +37,7 @@ export default function GameRoom() {
 
   async function exitGame()
   {
-    const response = await axios.post("http://localhost:8080/player/" + player.id + "/game/" + player.game?.id + "/unassign");
+    const response = await axios.post(BACKEND_URL + "/player/" + player.id + "/game/" + player.game?.id + "/unassign");
     
     if(response.status == 200)
     {
@@ -55,7 +56,7 @@ export default function GameRoom() {
 
   async function vote(playerID:number)
   {
-    const response = await axios.post("http://localhost:8080/player/" + player.id + "/voteOn/" + playerID);
+    const response = await axios.post(BACKEND_URL + "/player/" + player.id + "/voteOn/" + playerID);
     console.log(response.data);
      if(response.data)
     {
@@ -71,13 +72,13 @@ export default function GameRoom() {
 
   async function changeGameStatus()
   {
-    const response = await axios.post("http://localhost:8080/game/update/" + player.game?.id);
+    const response = await axios.post(BACKEND_URL + "/game/update/" + player.game?.id);
     console.error(response.data);
   }
 
   async function changeGameStatusToVoting()
   {
-    const response = await axios.post("http://localhost:8080/game/update/" + player.game?.id + "/voting");
+    const response = await axios.post(BACKEND_URL + "/game/update/" + player.game?.id + "/voting");
     console.log(response.data);
   }
 
@@ -123,6 +124,7 @@ export default function GameRoom() {
       {player.id == null || player.game == null || player.game.status !== "LOBBY" && player.game.status !== "VOTING" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
       <thead className="bg-blue-700 text-white font-bold">
         <tr className="p-10 ">
+          <td className="p-2 w-25">Profile</td>
           <td className="p-2 w-25">Player</td>
           <td className="p-2 w-25">ID</td>
           {player.game?.status == "VOTING" ? (<td className="p-2 w-25">Votes On</td>):(<></>)}
@@ -134,12 +136,15 @@ export default function GameRoom() {
         {
           playerList.map((playerRow)=>(
           <tr className=" bg-blue-300">
+            <td className="p-2 w-25   flex justify-start items-center">
+              <img src={playerRow.profilePic} alt="" className="w-[60%] rounded-xl" />
+            </td>
             <td className="p-2 w-25">{playerRow.name}</td>
             <td className="p-2 w-25">{playerRow.id}</td>
             {player.game?.status == "VOTING" ? (<td className="p-2 w-25">{playerRow.votesOn}</td>):(<></>)}
             {player.game?.status == "VOTING" ? (
               <td className="p-2 w-25 flex justify-center items-center">
-                {player.id != playerRow.id || player.voted ? (<button onClick={()=>vote(player.id ?? 0)} className="default-button-green">Vote</button>):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
+                {player.id != playerRow.id || player.voted ? (<button onClick={()=>vote(playerRow.id ?? 0)} className="default-button-green">Vote</button>):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
                 
                 </td>
               ):(<></>)}
