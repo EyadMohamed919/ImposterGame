@@ -27,7 +27,7 @@ function CreateGame({joinGame}:CreateGameProps)
         
     }
     return(
-        <div className="flex flex-col justify-center items-center p-5 bg-white rounded-xl">
+        <div className="flex flex-col mt-3 justify-center items-center p-5 bg-white rounded-xl">
             <h1 className="text-xl font-bold text-green-700 ">Create New Game</h1>
             <select onChange={(e)=>setCategory(e.target.value)} className="border-2 bordr-green-700 rounded-xl border-dashed p-2 font-bold text-green-700 mt-2">
                 <option value="" disabled selected>Select Game Category</option>

@@ -101,6 +101,7 @@ public class GameController {
             int index = (int) (Math.random() * playersInGame.size());
 
             Player imposterPlayer = playersInGame.get(index);
+            imposterPlayer.setImposter(true);
             this.playerService.createPlayer(imposterPlayer);
             game.setImposterId(playersInGame.get(index).getId());
         }
@@ -126,6 +127,11 @@ public class GameController {
         this.messagingTemplate.convertAndSend(
             "/topic/game/" + id, 
             objectMapper.writeValueAsString(game)
+        );
+
+        this.messagingTemplate.convertAndSend(
+            "/topic/game/" + id + "/players", 
+            playersInGame
         );
         this.gameService.createGame(game);
         return ResponseEntity.status(200).body(Map.of("message","updated game status"));

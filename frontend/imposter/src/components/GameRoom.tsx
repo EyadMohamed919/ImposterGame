@@ -8,6 +8,7 @@ import RoleCard from "./RoleCard";
 import Button from "./mini-components/Button";
 import { attachPlayer } from "../features/player/PlayerSlice";
 import { useNavigate } from "react-router-dom";
+import WinnerCard from "./WinnerCard";
 
 
 
@@ -118,7 +119,7 @@ export default function GameRoom() {
       {player.game?.status == "ROLES" ? (<RoleCard word={player.game.topic} isImposter={player.game?.imposterId == player.id} />) : (<></>)}
 
       {player.game?.status == "ONGOING" ? (<p className="p-7 bg-white font-bold text-3xl text-blue-600 pr-15 pl-15 rounded-full m-auto mt-5 mb-5">{timerDisplay}</p>):(<></>)}
-
+      {player.game?.status == "FINISHED" ? (<WinnerCard/>):(<></>)}
 
       {/* Player List Table */}
       {player.id == null || player.game == null || player.game.status !== "LOBBY" && player.game.status !== "VOTING" ? (<></>) : (<table className=" bg-white m-auto mt-10 p-10 rounded-xl overflow-hidden">
@@ -126,25 +127,25 @@ export default function GameRoom() {
         <tr className="p-10 ">
           <td className="p-2 w-25">Profile</td>
           <td className="p-2 w-25">Player</td>
-          <td className="p-2 w-25">ID</td>
+          {/* <td className="p-2 w-25">ID</td> */}
           {player.game?.status == "VOTING" ? (<td className="p-2 w-25">Votes On</td>):(<></>)}
           {player.game?.status == "VOTING" ? (<td className="p-2 w-25">Vote</td>):(<></>)}
         </tr>
       </thead>
       
-      <tbody>
+      <tbody className="bg-purple-500">
         {
           playerList.map((playerRow)=>(
-          <tr className=" bg-blue-300">
-            <td className="p-2 w-25   flex justify-start items-center">
-              <img src={playerRow.profilePic} alt="" className="w-[60%] rounded-xl" />
+          <tr className=" bg-blue-300 ">
+            <td className="p-2 w-25 bg-linear-to-r from-red-100 to-blue-300">
+              <img src={playerRow.profilePic} alt="" className="w-[60%] rounded-lg" />
             </td>
             <td className="p-2 w-25">{playerRow.name}</td>
-            <td className="p-2 w-25">{playerRow.id}</td>
+            {/* <td className="p-2 w-25">{playerRow.id}</td> */}
             {player.game?.status == "VOTING" ? (<td className="p-2 w-25">{playerRow.votesOn}</td>):(<></>)}
             {player.game?.status == "VOTING" ? (
-              <td className="p-2 w-25 flex justify-center items-center">
-                {player.id != playerRow.id || player.voted ? (<button onClick={()=>vote(playerRow.id ?? 0)} className="default-button-green">Vote</button>):(<button onClick={()=>vote(player.id ?? 0)} disabled className="default-button-green-disabled">Vote</button>)}
+              <td className="p-2 w-25">
+                {player.id != playerRow.id || player.voted ? (<button onClick={()=>vote(playerRow.id ?? 0)} className="default-button-green m-auto">Vote</button>):(<button disabled className="default-button-green-disabled m-auto">Vote</button>)}
                 
                 </td>
               ):(<></>)}
@@ -158,8 +159,8 @@ export default function GameRoom() {
     {/* <Button onClick={changeGameStatus()} bgColor="bg-green-700/70" borderColor="white" bgHoverColor="hover:bg-white" borderHoverColor="hover:border-green-700" textColor="text-white" textHoverColor="hover:text-green-500"></Button> */}
     
     <div className="flex-row flex justify-center items-center">
-      {player.game?.status == "ONGOING" ? (<></>):(<button onClick={()=>changeGameStatus()} className="default-button-green">{player.game?.status == "FINISHED" ? (<>Restart</>):(<>Start Game</>)}</button>)}
-      <button onClick={()=>exitGame()} className="default-button-red">Exit</button>
+      {player.game?.status == "ONGOING" ? (<></>):(<button onClick={()=>changeGameStatus()} className="default-button-green mt-3 m-auto">{player.game?.status == "FINISHED" ? (<>Restart</>):(<>Start Game</>)}</button>)}
+      <button onClick={()=>exitGame()} className="default-button-red mt-3 m-auto ml-3">Exit</button>
     </div>
     
     

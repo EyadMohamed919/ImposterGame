@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { attachGamesList } from "../features/game/GamesSlice";
 import { attachPlayerList } from "../features/player/PlayerListSlice";
 import type { RootState } from "./store";
-import { attachPlayer } from "../features/player/PlayerSlice";
+import { attachPlayer, type player } from "../features/player/PlayerSlice";
 
 // --- Hook 1: General Game List WebSocket ---
 export const useGameWebSocket = (playerID: number | null) => {
@@ -52,7 +52,7 @@ export const useCurrentGameWebSocket = (id: number | null) => {
   
   const VITE_WEBSOCKET_BACKEND_URL = import.meta.env.VITE_WEBSOCKET_BACKEND_URL;
   const clientRef = useRef<Client | null>(null);
-  const player = useSelector((state:RootState)=>state.player);
+  const playerState = useSelector((state:RootState)=>state.player);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -73,9 +73,9 @@ export const useCurrentGameWebSocket = (id: number | null) => {
 
         const game = JSON.parse(message.body);
 
-        if (player?.game) {
+        if (playerState?.game) {
           const updatedPlayer = {
-            ...player,
+            ...playerState,
             game: game,
           };
 
@@ -87,7 +87,12 @@ export const useCurrentGameWebSocket = (id: number | null) => {
       client.subscribe("/topic/game/" + id + "/players", (message) => {
         if (message.body) {
           console.log("Player List:", message.body);
-          const playerList = JSON.parse(message.body)
+          const playerList: player[] = JSON.parse(message.body);
+          playerList.map((playerFromList: player) => {
+            if (playerState.id === playerFromList.id) {
+              dispatch(attachPlayer(playerFromList));
+            }
+          });
           dispatch(attachPlayerList(playerList));
         }
       });
