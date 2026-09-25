@@ -145,7 +145,11 @@ export default function GameRoom() {
             {player.game?.status == "VOTING" ? (<td className="p-2 w-25">{playerRow.votesOn}</td>):(<></>)}
             {player.game?.status == "VOTING" ? (
               <td className="p-2 w-25">
-                {player.id != playerRow.id || player.voted ? (<button onClick={()=>vote(playerRow.id ?? 0)} className="default-button-green m-auto">Vote</button>):(<button disabled className="default-button-green-disabled m-auto">Vote</button>)}
+                {player.id != playerRow.id ? (<>
+                  {!player.voted ? (<button onClick={()=>vote(playerRow.id ?? 0)} className="default-button-green m-auto">Vote</button>):(<button disabled className="default-button-green-disabled m-auto">Vote</button>)}
+                  </>
+                )
+                  :(<button disabled className="default-button-green-disabled m-auto">Vote</button>)}
                 
                 </td>
               ):(<></>)}

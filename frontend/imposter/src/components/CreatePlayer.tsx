@@ -27,21 +27,24 @@ function CreatePlayer() {
     
     async function sendPlayer()
     {
+       
         
         if(name != "")
         {
             const randomPic = await axios.get("https://picsum.photos/200");
             
+            
             const picURL =  randomPic.request.res?.responseUrl || randomPic.request.responseURL;
+            
+            
             const response = await axios.post(BACKEND_URL + "/player", {
                 "name":name,
                 "picURL":picURL
             });
             
-
-            console.log(response.data);
             
             dispatch(attachPlayer(response.data));
+
         }
     }
 
