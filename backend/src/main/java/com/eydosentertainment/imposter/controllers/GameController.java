@@ -1,5 +1,6 @@
 package com.eydosentertainment.imposter.controllers;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -121,6 +122,11 @@ public class GameController {
         else if(game.getStatus().equals("FINISHED"))
         {
             game.setStatus("LOBBY");
+            // We have to reset all players data
+            for (Player player : playersInGame) {
+                player.setVoted(false);
+                player.setVotesOn(0);
+            }
         }
 
         
@@ -128,6 +134,8 @@ public class GameController {
             "/topic/game/" + id, 
             objectMapper.writeValueAsString(game)
         );
+
+        playersInGame.sort(Comparator.comparingLong(Player::getId));
 
         this.messagingTemplate.convertAndSend(
             "/topic/game/" + id + "/players", 

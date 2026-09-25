@@ -47,7 +47,7 @@ function WinnerCard() {
         return {
           title: "VICTORY",
           subtitle: "You Won as a Member",
-          description: "Great detective work! The imposter was successfully voted out.",
+          description: "Great detective work! The imposter was successfully voted out",
           bg: "bg-emerald-950/80 border-emerald-500 text-emerald-100",
           badge: "bg-emerald-500 text-slate-950",
           accentText: "text-emerald-400",
@@ -70,7 +70,7 @@ function WinnerCard() {
 
   return (
     <div className="w-full max-w-md mx-auto p-2">
-      <div className={`relative overflow-hidden rounded-2xl border-2 p-6 shadow-2xl backdrop-blur-md transition-all duration-300 ${card.bg}`}>
+      <div className={`relative overflow-hidden rounded-2xl border-2 p-6 transition-all duration-300 ${card.bg}`}>
         
         <div className="flex justify-between items-center mb-4">
           <span className={`text-xs font-black tracking-widest uppercase px-3 py-1 rounded-full ${card.badge}`}>
@@ -82,24 +82,22 @@ function WinnerCard() {
         </div>
 
         <div className="text-center my-6 space-y-1">
-          <h1 className={`text-4xl font-extrabold tracking-black ${isWinner ? "animate-pulse" : ""}`}>
+          <h1 className={`text-4xl font-extrabold tracking-black ${isWinner ? "" : ""}`}>
             {card.title}
           </h1>
           <p className={`text-lg font-bold ${card.accentText}`}>
             {card.subtitle}
           </p>
-          <p className="text-sm opacity-80 pt-2 max-w-xs mx-auto">
-            {card.description}
-          </p>
+          
         </div>
 
         <div className="mt-6 pt-4 border-t border-white/10 text-center">
           <p className="text-xs uppercase tracking-widest opacity-60 font-semibold mb-1">
             The Imposter Was
           </p>
-          <div className="inline-flex items-center gap-2 bg-black/40 px-4 py-2 rounded-xl border border-white/5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping" />
-            <span className="font-black text-red-400 text-base">
+          <div className="flex flex-row justify-center items-center gap-2 bg-white/20 w-fit py-2 rounded-xl border border-white/5">
+            <img src={actualImposter?.profilePic} alt="" className="w-[20%] rounded-lg" />
+            <span className="font-black text-white text-base">
               {actualImposter ? actualImposter.name || actualImposter.name || `Player #${actualImposter.id}` : "Unknown"}
             </span>
           </div>

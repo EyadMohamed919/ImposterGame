@@ -118,7 +118,8 @@ export default function GameRoom() {
 
       {player.game?.status == "ROLES" ? (<RoleCard word={player.game.topic} isImposter={player.game?.imposterId == player.id} />) : (<></>)}
 
-      {player.game?.status == "ONGOING" ? (<p className="p-7 bg-white font-bold text-3xl text-blue-600 pr-15 pl-15 rounded-full m-auto mt-5 mb-5">{timerDisplay}</p>):(<></>)}
+      {player.game?.status == "ONGOING" ? (
+        <p className="p-7 justify-center items-center flex flex-col bg-white font-bold text-3xl text-blue-600 pr-15 pl-15 rounded-full m-auto mt-5 mb-5"><p>Discussion Time!</p>{timerDisplay}</p>):(<></>)}
       {player.game?.status == "FINISHED" ? (<WinnerCard/>):(<></>)}
 
       {/* Player List Table */}
