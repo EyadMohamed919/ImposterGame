@@ -27,24 +27,24 @@ function CreatePlayer() {
     
     async function sendPlayer()
     {
-       
         
         if(name != "")
         {
-            const randomPic = await axios.get("https://picsum.photos/200");
+            try {
+                const randomPic = await axios.get("https://picsum.photos/200");
+                const picURL =  randomPic.request.res?.responseUrl || randomPic.request.responseURL;
+                // const picURL = ""
+                const response = await axios.post(BACKEND_URL + "/player", {
+                    "name":name,
+                    "picURL":picURL
+                });
+                dispatch(attachPlayer(response.data));
+            } catch (error) {
+                
+                console.error(error);
+                
+            }
             
-            
-            const picURL =  randomPic.request.res?.responseUrl || randomPic.request.responseURL;
-            
-            
-            const response = await axios.post(BACKEND_URL + "/player", {
-                "name":name,
-                "picURL":picURL
-            });
-            
-            
-            dispatch(attachPlayer(response.data));
-
         }
     }
 
