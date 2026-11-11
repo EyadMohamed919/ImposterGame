@@ -14,7 +14,10 @@ ImposterGame is a social deduction-style game where players assume different rol
 - **Dynamic Visual Effects** – Animated backgrounds and immersive visual feedback during gameplay
 - **State Management** – Centralized Redux store for consistent state across all components
 - **Full-Stack Architecture** – React frontend paired with Spring Boot backend (Java 21)
-
+# Screenshots
+![Login](https://raw.githubusercontent.com/EyadMohamed919/ImposterGame/refs/heads/main/screenshots/login.png)
+![Lobby](https://raw.githubusercontent.com/EyadMohamed919/ImposterGame/refs/heads/main/screenshots/lobby.png)
+![Login](https://raw.githubusercontent.com/EyadMohamed919/ImposterGame/refs/heads/main/screenshots/game.png)
 ## Quick Start
 
 ### Prerequisites
